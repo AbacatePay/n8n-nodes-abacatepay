@@ -1,0 +1,17 @@
+{
+  "node": "n8n-nodes-abacatepay.AbacatePay",
+  "nodeVersion": "1.0",
+  "codexVersion": "1.0",
+  "categories": [
+    "Finance"
+  ],
+  "resources": {
+    "credentialDocumentation": [
+      { "url": "" }
+    ],
+    "primaryDocumentation": [
+      { "url": "" }
+    ]
+  }
+}
+

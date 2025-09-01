@@ -1,19 +1,19 @@
 {
-  "name": "n8n-nodes-<...>",
+  "name": "n8n-nodes-abacatepay",
   "version": "0.1.0",
-  "description": "",
+  "description": "Node n8n para integrar com a API da AbacatePay",
   "keywords": [
     "n8n-community-node-package"
   ],
   "license": "MIT",
-  "homepage": "",
+  "homepage": "https://github.com/<your-user>/n8n-nodes-abacatepay",
   "author": {
-    "name": "",
-    "email": ""
+    "name": "Nino",
+    "email": "nino@example.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/<...>/n8n-nodes-<...>.git"
+    "url": "https://github.com/<your-user>/n8n-nodes-abacatepay.git"
   },
   "engines": {
     "node": ">=20.15"
@@ -33,12 +33,11 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "dist/credentials/ExampleCredentialsApi.credentials.js",
-      "dist/credentials/HttpBinApi.credentials.js"
+      "dist/credentials/AbacatePayApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/ExampleNode/ExampleNode.node.js",
-      "dist/nodes/HttpBin/HttpBin.node.js"
+      "dist/nodes/AbacatePay/AbacatePay.node.js",
+      "dist/nodes/AbacatePay/AbacatePayTrigger.node.js"
     ]
   },
   "devDependencies": {
