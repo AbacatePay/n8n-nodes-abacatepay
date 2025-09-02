@@ -1,4 +1,6 @@
 import {
+    IAuthenticateGeneric,
+    ICredentialTestRequest,
     ICredentialType,
     INodeProperties,
 } from 'n8n-workflow';
@@ -27,14 +29,21 @@ export class AbacatePayApi implements ICredentialType {
             description: 'URL base da API (altere se usar ambiente diferente)',
         },
     ];
-    authenticate = {
+    authenticate: IAuthenticateGeneric = {
         type: 'generic',
         properties: {
             headers: {
-                Authorization: '={{"Bearer " + $credentials.apiKey}}',
+                Authorization: '={{ "Bearer " + $credentials.apiKey }}',
             },
         },
-    } as const;
+    };
+
+    test: ICredentialTestRequest = {
+        request: {
+            baseURL: '={{ $credentials.baseUrl }}',
+            url: '/health',
+        },
+    };
 }
 
 
