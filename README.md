@@ -1,6 +1,6 @@
-# @viniciusameric/n8n-nodes-abacatepay
+# n8n-nodes-abacatepay-community
 
-[![npm version](https://badge.fury.io/js/@viniciusameric%2Fn8n-nodes-abacatepay.svg)](https://badge.fury.io/js/@viniciusameric%2Fn8n-nodes-abacatepay)
+[![npm version](https://badge.fury.io/js/n8n-nodes-abacatepay-community.svg)](https://badge.fury.io/js/n8n-nodes-abacatepay-community)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 n8n community node for integrating with AbacatePay API - a Brazilian payment gateway for PIX, billing, and customer management.
@@ -29,7 +29,7 @@ Real-time webhook monitoring with intelligent event processing:
 Install from npm:
 
 ```bash
-npm install @viniciusameric/n8n-nodes-abacatepay
+npm install n8n-nodes-abacatepay-community
 ```
 
 ## Setup
