@@ -1,48 +1,197 @@
-![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
+# n8n-nodes-abacatepay
 
-# n8n-nodes-starter
+[![npm version](https://badge.fury.io/js/n8n-nodes-abacatepay.svg)](https://badge.fury.io/js/n8n-nodes-abacatepay)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-This repo contains example nodes to help you get started building your own custom integrations for [n8n](https://n8n.io). It includes the node linter and other dependencies.
+n8n community node for integrating with AbacatePay API - a Brazilian payment gateway for PIX, billing, and customer management.
 
-To make your custom node available to the community, you must create it as an npm package, and [submit it to the npm registry](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry).
+## Features
 
-If you would like your node to be available on n8n cloud you can also [submit your node for verification](https://docs.n8n.io/integrations/creating-nodes/deploy/submit-community-nodes/).
+### 🥑 AbacatePay Node
+Complete integration with AbacatePay's REST API:
 
-## Prerequisites
+- **Customer Management**: Create and list customers with automatic CPF/CNPJ validation
+- **Billing System**: Create and manage bills with multiple products and coupon support
+- **PIX Payments**: Generate instant PIX QR codes with customizable expiration
+- **Coupon System**: Create percentage or fixed-value discount coupons
+- **Withdraw Management**: Create and track PIX withdrawals
 
-You need the following installed on your development machine:
+### 🔔 AbacatePay Trigger
+Real-time webhook monitoring with intelligent event processing:
 
-* [git](https://git-scm.com/downloads)
-* Node.js and npm. Minimum version Node 20. You can find instructions on how to install both using nvm (Node Version Manager) for Linux, Mac, and WSL [here](https://github.com/nvm-sh/nvm). For Windows users, refer to Microsoft's guide to [Install NodeJS on Windows](https://docs.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows).
-* Install n8n with:
-  ```
-  npm install n8n -g
-  ```
-* Recommended: follow n8n's guide to [set up your development environment](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/).
+- **16 Event Types**: Monitor PIX payments, billing changes, customer creation, coupon usage, and withdrawals
+- **Smart Detection**: Automatically detects resource type from webhook data
+- **Enriched Data**: Provides formatted amounts, parsed names, document validation, and status flags
+- **Flexible Authentication**: Supports none, basic auth, and header-based authentication
 
-## Using this starter
+## Installation
 
-These are the basic steps for working with the starter. For detailed guidance on creating and publishing nodes, refer to the [documentation](https://docs.n8n.io/integrations/creating-nodes/).
+Install from npm:
 
-1. [Generate a new repository](https://github.com/n8n-io/n8n-nodes-starter/generate) from this template repository.
-2. Clone your new repo:
-   ```
-   git clone https://github.com/<your organization>/<your-repo-name>.git
-   ```
-3. Run `npm i` to install dependencies.
-4. Open the project in your editor.
-5. Browse the examples in `/nodes` and `/credentials`. Modify the examples, or replace them with your own nodes.
-6. Update the `package.json` to match your details.
-7. Run `npm run lint` to check for errors or `npm run lintfix` to automatically fix errors when possible.
-8. Test your node locally. Refer to [Run your node locally](https://docs.n8n.io/integrations/creating-nodes/test/run-node-locally/) for guidance.
-9. Replace this README with documentation for your node. Use the [README_TEMPLATE](README_TEMPLATE.md) to get started.
-10. Update the LICENSE file to use your details.
-11. [Publish](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry) your package to npm.
+```bash
+npm install n8n-nodes-abacatepay
+```
 
-## More information
+## Setup
 
-Refer to our [documentation on creating nodes](https://docs.n8n.io/integrations/creating-nodes/) for detailed information on building your own nodes.
+1. **Get AbacatePay API Key**: Sign up at [AbacatePay](https://abacatepay.com) and get your API key
+2. **Add Credentials**: In n8n, create new "AbacatePay API" credentials with your API key
+3. **Configure Webhooks**: Set up webhook URLs in your AbacatePay dashboard to receive real-time events
+
+## Usage Examples
+
+### Create a Customer
+```typescript
+// Node: AbacatePay - Customer - Create
+{
+  "name": "João Silva Santos",
+  "cellphone": "(11) 99999-8888",
+  "email": "joao@example.com",
+  "taxId": "123.456.789-01"
+}
+```
+
+### Generate PIX Payment
+```typescript
+// Node: AbacatePay - PIX QR Code - Create
+{
+  "amount": 5000, // R$ 50.00 in cents
+  "description": "Premium Plan Payment",
+  "expiresIn": 1800, // 30 minutes
+  "customer": {
+    "name": "João Silva Santos",
+    "email": "joao@example.com"
+  }
+}
+```
+
+### Monitor Payments
+```typescript
+// Trigger: AbacatePay Trigger
+// Events: ["pix.payment.completed", "billing.paid"]
+// Automatically receives enriched data:
+{
+  "event": "pix.payment.completed",
+  "resourceType": "pix",
+  "amounts": {
+    "raw": 5000,
+    "reais": "50.00",
+    "net": 4920,
+    "netReais": "49.20"
+  },
+  "customer": {
+    "name": {
+      "first": "João",
+      "full": "João Silva Santos"
+    },
+    "document": {
+      "type": "CPF",
+      "cleaned": "12345678901"
+    }
+  }
+}
+```
+
+## Supported Operations
+
+### Customer Resource
+- **Create**: Register new customers with validation
+- **List**: Retrieve all registered customers
+
+### Billing Resource  
+- **Create**: Generate payment links with multiple products
+- **List**: View all created bills and their status
+
+### PIX QR Code Resource
+- **Create**: Generate instant PIX QR codes
+- **Simulate Payment**: Test payments in development mode
+- **Check Status**: Verify payment status
+
+### Coupon Resource
+- **Create**: Create discount coupons (percentage or fixed value)
+- **List**: Manage all created coupons
+
+### Withdraw Resource
+- **Create**: Process PIX withdrawals to bank accounts
+- **List**: Track withdrawal history and status
+
+## Webhook Events
+
+The AbacatePay Trigger monitors these event types:
+
+| Event | Description |
+|-------|-------------|
+| `customer.created` | New customer registered |
+| `customer.updated` | Customer data updated |
+| `pix.payment.completed` | PIX payment successful |
+| `pix.payment.expired` | PIX QR code expired |
+| `pix.payment.cancelled` | PIX payment cancelled |
+| `pix.qrcode.created` | PIX QR code generated |
+| `billing.created` | New bill created |
+| `billing.paid` | Bill payment confirmed |
+| `billing.expired` | Bill expired |
+| `billing.cancelled` | Bill cancelled |
+| `coupon.created` | New coupon created |
+| `coupon.redeemed` | Coupon used |
+| `coupon.expired` | Coupon expired |
+| `withdraw.created` | Withdrawal initiated |
+| `withdraw.completed` | Withdrawal processed |
+| `withdraw.failed` | Withdrawal failed |
+
+## Data Enrichment
+
+The trigger automatically enriches webhook data with:
+
+- **Formatted Amounts**: Converts cents to Brazilian Real (R$)
+- **Net Calculations**: Deducts platform fees automatically
+- **Name Parsing**: Extracts first/last names from full names
+- **Document Validation**: Identifies CPF vs CNPJ documents
+- **Email Analysis**: Extracts domains and identifies personal emails
+- **Status Flags**: Boolean flags for quick conditional logic
+
+## Authentication
+
+Configure your AbacatePay credentials in n8n:
+
+1. **API Key**: Your AbacatePay Bearer token
+2. **Base URL**: Default is `https://api.abacatepay.com` (change for different environments)
+
+## Automation Examples
+
+### Welcome Email Flow
+1. **Trigger**: Customer created
+2. **Action**: Send personalized welcome email
+3. **Action**: Create welcome discount coupon
+4. **Action**: Update CRM with new customer
+
+### Payment Confirmation
+1. **Trigger**: PIX payment completed
+2. **Condition**: Check payment amount
+3. **Action**: Send receipt email
+4. **Action**: Activate purchased service
+5. **Action**: Update analytics
+
+## Requirements
+
+- n8n version 0.198.0 or higher
+- Node.js 20.15 or higher
+- AbacatePay account with API access
+
 
 ## License
 
-[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+MIT License - see LICENSE file for details.
+
+## Support
+
+- 📧 **Email**: ajuda@abacatepay.com
+- 📖 **Documentation**: [AbacatePay API Docs](https://docs.abacatepay.com)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/your-user/n8n-nodes-abacatepay/issues)
+
+## Contributing
+
+Contributions are welcome! Please read our contributing guidelines and submit pull requests to our repository.
+
+---
+
+Made with ❤️ for the n8n community and Brazilian payment automation.

@@ -42,7 +42,7 @@ export function createBaseTriggerDescription(config: ITriggerConfig): INodeTypeD
 				name: 'events',
 				type: 'multiOptions',
 				options: config.events,
-				default: config.events.map(e => e.value),
+				default: [],
 				description: 'Selecione os eventos que devem disparar o trigger',
 				required: true,
 			},
