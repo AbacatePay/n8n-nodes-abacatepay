@@ -53,9 +53,7 @@ export async function execute(this: IExecuteFunctions, i: number): Promise<IData
 		throw new Error('PIX QR Code ID is required');
 	}
 
-	const body: IDataObject = {
-		id: pixId.trim(),
-	};
+	const body: IDataObject = {};
 
 	// Add metadata if provided and has meaningful values
 	if (metadata && Object.keys(metadata).length > 0) {
@@ -75,7 +73,7 @@ export async function execute(this: IExecuteFunctions, i: number): Promise<IData
 			'Content-Type': 'application/json',
 			Accept: 'application/json',
 		},
-		url: `${credentials.baseUrl}/v1/pixQrCode/simulate-payment`,
+		url: `${credentials.baseUrl}/v1/pixQrCode/simulate-payment?id=${pixId.trim()}`,
 		body,
 		json: true,
 	};
