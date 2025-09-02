@@ -43,16 +43,29 @@ export const description: INodeProperties[] = [
 
 export async function execute(this: IExecuteFunctions, i: number): Promise<IDataObject> {
 	const credentials = await this.getCredentials('abacatePayApi');
-	
+
 	// Get simulation data
 	const pixId = this.getNodeParameter('pixId', i) as string;
-	const metadata = this.getNodeParameter('metadata', i) as IDataObject;
+	const metadata = this.getNodeParameter('metadata', i, {}) as IDataObject;
 
-	const body: IDataObject = {};
+	// Validate required field
+	if (!pixId || pixId.trim() === '') {
+		throw new Error('PIX QR Code ID is required');
+	}
 
-	// Add metadata if provided
+	const body: IDataObject = {
+		id: pixId.trim(),
+	};
+
+	// Add metadata if provided and has meaningful values
 	if (metadata && Object.keys(metadata).length > 0) {
-		body.metadata = metadata;
+		const cleanMetadata: IDataObject = {};
+		if (metadata.externalId && (metadata.externalId as string).trim() !== '') {
+			cleanMetadata.externalId = (metadata.externalId as string).trim();
+		}
+		if (Object.keys(cleanMetadata).length > 0) {
+			body.metadata = cleanMetadata;
+		}
 	}
 
 	const options: IHttpRequestOptions = {
@@ -62,10 +75,18 @@ export async function execute(this: IExecuteFunctions, i: number): Promise<IData
 			'Content-Type': 'application/json',
 			Accept: 'application/json',
 		},
-		url: `${credentials.baseUrl}/v1/pixQrCode/simulate-payment?id=${pixId}`,
+		url: `${credentials.baseUrl}/v1/pixQrCode/simulate-payment`,
 		body,
 		json: true,
 	};
 
-	return await this.helpers.httpRequest(options);
+	try {
+		return await this.helpers.httpRequest(options);
+	} catch (error: any) {
+		// Enhanced error handling
+		if (error.response?.data) {
+			throw new Error(`AbacatePay API Error: ${JSON.stringify(error.response.data)}`);
+		}
+		throw error;
+	}
 }
