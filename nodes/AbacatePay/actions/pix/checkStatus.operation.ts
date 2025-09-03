@@ -31,7 +31,7 @@ export async function execute(this: IExecuteFunctions, i: number): Promise<IData
 			Accept: 'application/json',
 		},
 		url: `${credentials.baseUrl}/v1/pixQrCode/check?id=${pixId}`,
-		json: true,
+		json: false,
 	};
 
 	return await this.helpers.httpRequest(options);

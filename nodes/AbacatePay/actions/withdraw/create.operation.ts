@@ -146,7 +146,7 @@ export async function execute(this: IExecuteFunctions, i: number): Promise<IData
 		amount,
 		pix: {
 			key: pixKey.trim(),
-			keyType: pixKeyType,
+			type: pixKeyType,
 		},
 	};
 

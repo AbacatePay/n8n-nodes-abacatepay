@@ -129,7 +129,7 @@ export async function execute(this: IExecuteFunctions, i: number): Promise<IData
 		throw new Error('Discount must be greater than 0');
 	}
 
-	const body: IDataObject = {
+	const couponData: IDataObject = {
 		code: code.trim().toUpperCase(),
 		discountKind,
 		discount,
@@ -137,11 +137,11 @@ export async function execute(this: IExecuteFunctions, i: number): Promise<IData
 
 	// Add optional fields
 	if (notes && notes.trim() !== '') {
-		body.notes = notes.trim();
+		couponData.notes = notes.trim();
 	}
 	
 	if (maxRedeems !== undefined) {
-		body.maxRedeems = maxRedeems;
+		couponData.maxRedeems = maxRedeems;
 	}
 	
 	// Only add metadata if it has meaningful values
@@ -151,9 +151,14 @@ export async function execute(this: IExecuteFunctions, i: number): Promise<IData
 			cleanMetadata.externalId = (metadata.externalId as string).trim();
 		}
 		if (Object.keys(cleanMetadata).length > 0) {
-			body.metadata = cleanMetadata;
+			couponData.metadata = cleanMetadata;
 		}
 	}
+
+	const body: IDataObject = {
+		data: couponData,
+		error: null,
+	};
 
 	const options: IHttpRequestOptions = {
 		method: 'POST',
