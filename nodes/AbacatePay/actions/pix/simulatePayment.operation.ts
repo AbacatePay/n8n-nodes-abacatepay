@@ -54,6 +54,7 @@ export async function execute(this: IExecuteFunctions, i: number): Promise<IData
 	}
 
 	const body: IDataObject = {};
+	let hasBody = false;
 
 	// Add metadata if provided and has meaningful values
 	if (metadata && Object.keys(metadata).length > 0) {
@@ -63,20 +64,31 @@ export async function execute(this: IExecuteFunctions, i: number): Promise<IData
 		}
 		if (Object.keys(cleanMetadata).length > 0) {
 			body.metadata = cleanMetadata;
+			hasBody = true;
 		}
+	}
+
+	const headers: IDataObject = {
+		Authorization: `Bearer ${credentials.apiKey}`,
+		Accept: 'application/json',
+	};
+
+	// Only add Content-Type if we have a body
+	if (hasBody) {
+		headers['Content-Type'] = 'application/json';
 	}
 
 	const options: IHttpRequestOptions = {
 		method: 'POST',
-		headers: {
-			Authorization: `Bearer ${credentials.apiKey}`,
-			'Content-Type': 'application/json',
-			Accept: 'application/json',
-		},
+		headers,
 		url: `${credentials.baseUrl}/v1/pixQrCode/simulate-payment?id=${pixId.trim()}`,
-		body,
-		json: true,
+		json: hasBody,
 	};
+
+	// Only add body if we have content
+	if (hasBody) {
+		options.body = body;
+	}
 
 	try {
 		return await this.helpers.httpRequest(options);
