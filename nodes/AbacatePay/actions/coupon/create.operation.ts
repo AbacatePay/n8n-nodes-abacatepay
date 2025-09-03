@@ -63,6 +63,7 @@ export const description: INodeProperties[] = [
 		displayName: 'Notes',
 		name: 'notes',
 		type: 'string',
+		required: true,
 		default: '',
 		description: 'Descrição sobre o cupom',
 		displayOptions: {
@@ -112,7 +113,7 @@ export const description: INodeProperties[] = [
 
 export async function execute(this: IExecuteFunctions, i: number): Promise<IDataObject> {
 	const credentials = await this.getCredentials('abacatePayApi');
-	
+
 	// Get coupon data
 	const code = this.getNodeParameter('code', i) as string;
 	const discountKind = this.getNodeParameter('discountKind', i) as string;
@@ -125,6 +126,9 @@ export async function execute(this: IExecuteFunctions, i: number): Promise<IData
 	if (!code || code.trim() === '') {
 		throw new Error('Code is required');
 	}
+	if (!notes || notes.trim() === '') {
+		throw new Error('Notes is required');
+	}
 	if (!discount || discount <= 0) {
 		throw new Error('Discount must be greater than 0');
 	}
@@ -133,17 +137,13 @@ export async function execute(this: IExecuteFunctions, i: number): Promise<IData
 		code: code.trim().toUpperCase(),
 		discountKind,
 		discount,
+		notes: notes.trim(),
 	};
 
-	// Add optional fields
-	if (notes && notes.trim() !== '') {
-		couponData.notes = notes.trim();
-	}
-	
 	if (maxRedeems !== undefined) {
 		couponData.maxRedeems = maxRedeems;
 	}
-	
+
 	// Only add metadata if it has meaningful values
 	if (metadata && Object.keys(metadata).length > 0) {
 		const cleanMetadata: IDataObject = {};
