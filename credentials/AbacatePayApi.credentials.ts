@@ -38,12 +38,12 @@ export class AbacatePayApi implements ICredentialType {
         },
     };
 
-    test: ICredentialTestRequest = {
-        request: {
-            baseURL: '={{ $credentials.baseUrl }}',
-            url: '/health',
-        },
-    };
+    	test: ICredentialTestRequest = {
+		request: {
+			baseURL: '={{ $credentials.baseUrl }}',
+			url: '/v1/customer/list',
+		},
+	};
 }
 
 
