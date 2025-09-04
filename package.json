@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-abacatepay-community",
-  "version": "0.1.11",
+  "version": "0.1.10",
   "description": "Node n8n para integrar com a API da AbacatePay",
   "keywords": [
     "n8n-community-node-package"
@@ -15,7 +15,7 @@
     "url": "https://github.com/abacatepay/n8n-nodes-abacatepay.git"
   },
   "engines": {
-    "node": ">=20.15"
+    "node": ">=18.0.0"
   },
   "main": "index.js",
   "scripts": {

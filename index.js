@@ -1,3 +1,4 @@
-// This file is intentionally empty.
-// n8n community nodes are loaded via the "n8n" field in package.json
-// which points to the compiled files in the dist/ directory.
+// This file exports the nodes for n8n community package
+// The actual node definitions are in the dist/ directory
+
+module.exports = {};
