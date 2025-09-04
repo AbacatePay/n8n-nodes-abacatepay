@@ -49,5 +49,6 @@
   },
   "peerDependencies": {
     "n8n-workflow": "*"
-  }
+  },
+  "dependencies": {}
 }
