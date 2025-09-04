@@ -3,20 +3,6 @@ import type { INodeProperties } from 'n8n-workflow';
 
 export const description: INodeProperties[] = [
 	{
-		displayName: 'External ID',
-		name: 'externalId',
-		type: 'string',
-		required: true,
-		default: '',
-		description: 'Identificador único do saque em seu sistema',
-		displayOptions: {
-			show: {
-				resource: ['withdraw'],
-				operation: ['create'],
-			},
-		},
-	},
-	{
 		displayName: 'Amount (in Cents)',
 		name: 'amount',
 		type: 'number',
@@ -34,46 +20,12 @@ export const description: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Method',
-		name: 'method',
-		type: 'options',
-		required: true,
-		default: 'PIX',
-		description: 'Método de saque',
-		displayOptions: {
-			show: {
-				resource: ['withdraw'],
-				operation: ['create'],
-			},
-		},
-		options: [
-			{
-				name: 'PIX',
-				value: 'PIX',
-			},
-		],
-	},
-	{
-		displayName: 'PIX Key',
-		name: 'pixKey',
-		type: 'string',
-		required: true,
-		default: '',
-		description: 'Chave PIX para receber o saque',
-		displayOptions: {
-			show: {
-				resource: ['withdraw'],
-				operation: ['create'],
-			},
-		},
-	},
-	{
 		displayName: 'PIX Key Type',
 		name: 'pixKeyType',
 		type: 'options',
 		required: true,
 		default: 'CPF',
-		description: 'Tipo da chave PIX',
+		description: 'Tipo da chave PIX para receber o saque',
 		displayOptions: {
 			show: {
 				resource: ['withdraw'],
@@ -84,24 +36,59 @@ export const description: INodeProperties[] = [
 			{
 				name: 'CNPJ',
 				value: 'CNPJ',
+				description: 'CNPJ (ex: 12.345.678/0001-90)',
 			},
 			{
 				name: 'CPF',
 				value: 'CPF',
+				description: 'CPF (ex: 123.456.789-01)',
 			},
 			{
 				name: 'Email',
 				value: 'EMAIL',
+				description: 'Email (ex: usuario@exemplo.com)',
 			},
 			{
 				name: 'Phone',
 				value: 'PHONE',
+				description: 'Telefone (ex: +5511999999999)',
 			},
 			{
 				name: 'Random Key',
 				value: 'RANDOM',
+				description: 'Chave aleatória (UUID)',
 			},
 		],
+	},
+	{
+		displayName: 'PIX Key',
+		name: 'pixKey',
+		type: 'string',
+		required: true,
+		default: '',
+		description: 'Chave PIX para receber o saque',
+		placeholder: 'Digite sua chave PIX',
+		displayOptions: {
+			show: {
+				resource: ['withdraw'],
+				operation: ['create'],
+			},
+		},
+	},
+	{
+		displayName: 'External ID',
+		name: 'externalId',
+		type: 'string',
+		required: true,
+		default: '',
+		description: 'Identificador único do saque em seu sistema',
+		placeholder: 'withdraw-1234',
+		displayOptions: {
+			show: {
+				resource: ['withdraw'],
+				operation: ['create'],
+			},
+		},
 	},
 	{
 		displayName: 'Description',
@@ -109,6 +96,7 @@ export const description: INodeProperties[] = [
 		type: 'string',
 		default: '',
 		description: 'Descrição opcional do saque',
+		placeholder: 'Saque para conta principal',
 		displayOptions: {
 			show: {
 				resource: ['withdraw'],
@@ -122,31 +110,30 @@ export async function execute(this: IExecuteFunctions, i: number): Promise<IData
 	const credentials = await this.getCredentials('abacatePayApi');
 
 	// Get withdraw data
-	const externalId = this.getNodeParameter('externalId', i) as string;
 	const amount = this.getNodeParameter('amount', i) as number;
-	const method = this.getNodeParameter('method', i) as string;
-	const pixKey = this.getNodeParameter('pixKey', i) as string;
 	const pixKeyType = this.getNodeParameter('pixKeyType', i) as string;
+	const pixKey = this.getNodeParameter('pixKey', i) as string;
+	const externalId = this.getNodeParameter('externalId', i) as string;
 	const description = this.getNodeParameter('description', i, '') as string;
 
 	// Validate required fields
-	if (!externalId || externalId.trim() === '') {
-		throw new Error('External ID is required');
-	}
 	if (!amount || amount < 350) {
 		throw new Error('Amount must be at least 350 cents (R$ 3.50)');
 	}
 	if (!pixKey || pixKey.trim() === '') {
 		throw new Error('PIX Key is required');
 	}
+	if (!externalId || externalId.trim() === '') {
+		throw new Error('External ID is required');
+	}
 
 	const body: IDataObject = {
 		externalId: externalId.trim(),
-		method,
+		method: 'PIX',
 		amount,
 		pix: {
-			key: pixKey.trim(),
 			type: pixKeyType,
+			key: pixKey.trim(),
 		},
 	};
 

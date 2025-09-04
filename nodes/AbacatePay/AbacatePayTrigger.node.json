@@ -7,10 +7,10 @@
   ],
   "resources": {
     "credentialDocumentation": [
-      { "url": "" }
+      { "url": "https://docs.abacatepay.com/getting-started" }
     ],
     "primaryDocumentation": [
-      { "url": "" }
+      { "url": "https://docs.abacatepay.com/" }
     ]
   }
 }

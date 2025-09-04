@@ -155,10 +155,7 @@ export async function execute(this: IExecuteFunctions, i: number): Promise<IData
 		}
 	}
 
-	const body: IDataObject = {
-		data: couponData,
-		error: null,
-	};
+	const body: IDataObject = couponData;
 
 	const options: IHttpRequestOptions = {
 		method: 'POST',
