@@ -128,15 +128,22 @@ export class AbacatePay implements INodeType {
 				}
 
 				if (Array.isArray(responseData)) {
-					returnData.push(...responseData.map(item => ({ json: item })));
+					returnData.push(...responseData.map(item => ({
+						json: item,
+						pairedItem: { item: i }
+					})));
 				} else {
-					returnData.push({ json: responseData });
+					returnData.push({
+						json: responseData,
+						pairedItem: { item: i }
+					});
 				}
 			} catch (error) {
 				if (this.continueOnFail()) {
 					returnData.push({
 						json: {},
 						error: error.message,
+						pairedItem: { item: i }
 					});
 					continue;
 				}
